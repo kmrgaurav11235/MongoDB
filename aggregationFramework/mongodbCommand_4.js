@@ -5,6 +5,8 @@ db.persons.aggregate([
     gender: 1,
     name: 1,
     email: 1,
+    birthDate: {$toDate: "$dob.date"},
+    age: "$dob.age",
     location: {"type": "Point", "coordinates": [
       {
         $convert: {"input": "$location.coordinates.longitude", "to": "double", "onError": 0.0, "onNull": 0.0}
@@ -27,7 +29,9 @@ db.persons.aggregate([
       },
       gender: 1,
       email: 1,
-      location: 1
+      location: 1,
+      birthDate: 1,
+      age: 1
     }
   }
 ]).pretty()
