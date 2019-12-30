@@ -1,8 +1,21 @@
 // On data/persons.json
 db.persons.aggregate([
+  {$project: {
+    _id: 0,
+    gender: 1,
+    name: 1,
+    email: 1,
+    location: {"type": "Point", "coordinates": [
+      {
+        $convert: {"input": "$location.coordinates.longitude", "to": "double", "onError": 0.0, "onNull": 0.0}
+      },
+      {
+        $convert: {"input": "$location.coordinates.latitude", "to": "double", "onError": 0.0, "onNull": 0.0}
+      }
+    ]}}
+  },
   {
     $project: {
-      _id: 0,
       "fullName": {
         $concat: [
           {$toUpper: {$substrCP: ["$name.first", 0, 1]}},
@@ -12,7 +25,9 @@ db.persons.aggregate([
           {$substrCP: ["$name.last", 1, {$subtract: [{$strLenCP: "$name.last"}, 1]}]},
         ]
       },
-      gender: 1
+      gender: 1,
+      email: 1,
+      location: 1
     }
   }
 ]).pretty()
